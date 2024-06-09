@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ekstraksi Pesan</title>
+    <link rel="stylesheet" href="../static/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="card">
+        <div class="card-body">
+          <h1>Ekstraksi Pesan</h1>
+          <form
+            id="revealForm"
+            enctype="multipart/form-data"
+            action="reveal_message.html"
+            method="post"
+          >
+            <input type="file" name="image" required /><br />
+            <input
+              type="text"
+              name="key"
+              placeholder="Masukkan kata kunci (jika ada)"
+            /><br />
+            <button type="submit" class="btn-dark">Ekstraksi Pesan</button>
+          </form>
+          <div id="messageContainer"></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.getElementById("revealForm").onsubmit = async function (event) {
+        event.preventDefault();
+        let formData = new FormData(event.target);
+        let response = await fetch("/reveal", {
+          method: "POST",
+          body: formData,
+        });
+        let result = await response.json();
+        if (response.ok) {
+          document.getElementById("messageContainer").innerText =
+            "Pesan: " + result.message;
+        } else {
+          document.getElementById("messageContainer").innerText =
+            "Error: " + result.error;
+        }
+      };
+    </script>
+  </body>
+</html>

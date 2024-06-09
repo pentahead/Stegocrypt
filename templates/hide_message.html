@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sembunyikan Pesan - StegoCrypt</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-body">
+                <h1>Sembunyikan Pesan</h1>
+                <form id="hideForm" enctype="multipart/form-data">
+                    <input type="file" name="image" required><br>
+                    <input type="text" name="message" placeholder="Masukkan pesan" required><br>
+                    <input type="text" name="key" placeholder="Masukkan kata kunci (opsional)"><br>
+                    <button type="submit" class="btn-dark">Sembunyikan Pesan</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('hideForm').onsubmit = async function(event) {
+            event.preventDefault();
+            let formData = new FormData(event.target);
+            let response = await fetch('/hide', { method: 'POST', body: formData });
+            if (response.ok) {
+                let blob = await response.blob();
+                let url = window.URL.createObjectURL(blob);
+                let a = document.createElement('a');
+                a.href = url;
+                a.download = 'hidden.png';
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+            } else {
+                let result = await response.json();
+                alert('Error: ' + result.error);
+            }
+        };
+    </script>
+</body>
+</html>
